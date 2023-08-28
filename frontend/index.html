@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rover Operations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+
+    <h1 class="display-5" style="text-align: center;">Operator Terminal</h1>
+
+    <div class="container-sm" style="max-width: 900px;">
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+    <div class="container-sm" style="max-width: 800px;">
+      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#mapSizeModal">Change Map Size</button>
+
+      <div class="modal fade" id="mapSizeModal" tabindex="-1" aria-labelledby="mapSizeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="mapSizeModalLabel">Dimensions (Warning all mines and rovers will get deleted!)</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <div class="mb-3">
+                <label for="xSize" class="form-label">Width (X Length)</label>
+                <input type="number" class="form-control" id="xSizeInput" placeholder="1" autocomplete="off">
+              </div>
+
+              <div class="mb-3">
+                <label for="ySize" class="form-label">Height (Y Length)</label>
+                <input type="number" class="form-control" id="ySizeInput" placeholder="4">
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="subMapSize">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+
+    <div class="container-sm" style="max-width: 800px;">
+        <table class="table" id="mineTable">
+            <thead>
+              <tr>
+                <th scope="col">Mine ID</th>
+                <th scope="col">Serial</th>
+                <th scope="col">Coordinate (x, y)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+
+              </tr>
+              <tr>
+
+              </tr>
+              <tr>
+
+              </tr>
+            </tbody>
+          </table>
+    </div>
+
+    <div class="container" style="max-width: 800px;">
+      <button type="button" class="btn btn-primary" onclick="getAllMines()">Get Mines</button>
+      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#idMineModal">Get Mine (With ID)</button>
+
+      <div class="modal fade" id="idMineModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Get Mine With ID</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="id" class="form-label">Mine ID</label>
+                <input type="number" class="form-control" id="mineIdSingle" placeholder="1">
+              </div>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="getMineWithIdBtn">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Add Mine </button>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Input Mine Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="serialNum" class="form-label">Serial</label>
+                        <input type="text" class="form-control" id="serialNum" placeholder="MX2YB">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="xCord" class="form-label">X coordinate</label>
+                        <input type="number" class="form-control" id="xCord" placeholder="1">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="yCord" class="form-label">Y coordinate</label>
+                        <input type="number" class="form-control" id="yCord" placeholder="5">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitMineBtn">Submit</button>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+
+        <button type="button" class="btn btn-warning" id="delMine" data-bs-toggle="modal" data-bs-target="#delMineModal">Delete Mine</button>
+
+        <div class="modal fade" id="delMineModal" tabindex="-1" aria-labelledby="delMineLabel" aria-hidden="true">
+          <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h5 class="modal-title" id="delMineModalLabel">Input Mine ID</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body">
+                  <div class="mb-3">
+                      <label for="serialNum" class="form-label">Mine ID</label>
+                      <input type="text" class="form-control" id="mineIdTxt" placeholder="MX2YB">
+                  </div>
+
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" id="delSubMine">Submit</button>
+              </div>
+
+          </div>
+          </div>
+      </div>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMineModal">Update Mine</button>
+
+        <div class="modal fade" id="updateMineModal" tabindex="-1" aria-labelledby="updateMineModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Input Mine Info</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+
+                <div class="mb-3">
+                  <label for="x_pos" class="form-label">Mine ID</label>
+                  <input type="text" class="form-control" id="mineUpdatedID" placeholder="4">
+                </div>
+        
+                <div class="mb-3">
+                  <label for="x_pos" class="form-label">X</label>
+                  <input type="text" class="form-control" id="updatedX" placeholder="1">
+                </div>
+
+                <div class="mb-3">
+                  <label for="y_pos" class="form-label">Y</label>
+                  <input type="text" class="form-control" id="updatedY" placeholder="2">
+                </div>
+
+                <div class="mb-3">
+                  <label for="serial_option" class="form-label">Serial (Optional)</label>
+                  <input type="text" class="form-control" id="updatedSerial" placeholder="MX2YB">
+              </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="updateMineSubBtn">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        
+        
+    </div>
+
+
+
+
+    <div class="container-sm" style="max-width: 800px;">
+      <table class="table" id="roverTable">
+          <thead>
+            <tr>
+              <th scope="col">Rover ID</th>
+              <th scope="col">Status</th>
+              <th scope="col">Position</th>
+              <th scope="col">Commands</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+
+            </tr>
+            <tr>
+
+            </tr>
+            <tr>
+
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+
+    <div class="container-sm" style="max-width: 800px;">
+      <button type="button" class="btn btn-primary" id="roverBtn">Get Rovers</button>
+
+      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#getSingleRoverModal">Get Rovers (With ID)</button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="getSingleRoverModal" tabindex="-1" aria-labelledby="getSingleRoverModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="getSingleRoverLabel">Get Rover</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+              <div class="mb-3">
+                <label for="commands" class="form-label">ID</label>
+                <input type="text" class="form-control" id="idSingleTxtBox" placeholder="e.g albxe">
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="submitGetSingleRover">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createRoverModal">Create Rover</button>
+
+      <div class="modal fade" id="createRoverModal" tabindex="-1" aria-labelledby="createRoverModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create Rover</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+              <div class="mb-3">
+                <label for="commands" class="form-label">Commands</label>
+                <input type="text" class="form-control" id="commandsTxtBox" placeholder="MMMRLMMD">
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="submitCreateRover">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-warning" id="delRover" data-bs-toggle="modal" data-bs-target="#delRoverModal">Delete Rover</button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="delRoverModal" tabindex="-1" aria-labelledby="delRoverModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="delRoverModalLabel">Delete Rover</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+              <div class="mb-3">
+                <label for="commands" class="form-label">ID</label>
+                <input type="text" class="form-control" id="delRoverID" placeholder="e.g ljkasd">
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="delRoverBtn">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <button type="button" class="btn btn-info" id="sendCommands" data-bs-toggle="modal" data-bs-target="#sendCommandsModal">Sends Commands</button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="sendCommandsModal" tabindex="-1" aria-labelledby="sendCommandsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="sendCommandsModal">Send Commands</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <div class="mb-3">
+                <label for="commands" class="form-label">ID</label>
+                <input type="nuumber" class="form-control" id="sendCommandsId" placeholder="e.g ezdg">
+              </div>
+              
+              <div class="mb-3">
+                <label for="commands" class="form-label">Commands</label>
+                <input type="text" class="form-control" id="sendCommandsTxt" placeholder="e.g MMMMDDMMMD">
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="submitSendCommands">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <button type="button" class="btn btn-danger my-1" id="dispatchRover" data-bs-toggle="modal" data-bs-target="#dispatchRoverModal">Dispatch Rover</button>
+
+
+      <!-- Modal -->
+      <div class="modal fade" id="dispatchRoverModal" tabindex="-1" aria-labelledby="dispatchRoverModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="dispatchRoverModalLabel">Dispatch Rover</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+
+              <div class="mb-3">
+                <label for="dispatching" class="form-label">ID</label>
+                <input type="text" class="form-control" id="dispatchID" placeholder="e.g ezdg">
+              </div>
+
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="dispatchRoverBtn">Dispatch</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
+
+  </body>
+</html>
